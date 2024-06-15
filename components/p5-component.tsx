@@ -1,7 +1,7 @@
 "use client";
 import Sketch from "react-p5";
 import p5Types from "p5"; //Import this for typechecking and intellisense
-
+import ParticleSystem from "p5";
 let x = 200;
 const y = 300;
 let angle = 0.0;
@@ -12,8 +12,14 @@ const Y_AXIS = 1;
 const X_AXIS = 2;
 let b1, b2: p5Types.Color;
 let c1: p5Types.Color, c2: p5Types.Color;
-
+let system: ParticleSystem;
 const P5Component = () => {
+  const preload = (p5: p5Types) => {};
+
+  const windowResized = (p5: p5Types) => {
+    p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
+  };
+
   const setup = (p5: p5Types) => {
     p5.noStroke();
     // Define colors
@@ -22,6 +28,8 @@ const P5Component = () => {
     c1 = p5.color(204, 102, 0);
     c2 = p5.color(0, 102, 153);
     p5.createCanvas(1000, 800);
+    let vector = p5.createVector(p5.width / 2, 50);
+    system = new ParticleSystem(vector.dot);
   };
 
   const draw = (p5: p5Types) => {
@@ -35,6 +43,7 @@ const P5Component = () => {
     } else {
       x = x + 5;
     }
+    // system.addParticle();
     setGradient(50, 90, 540, 80, c1, c2, Y_AXIS, p5);
     setGradient(50, 190, 540, 80, c2, c1, X_AXIS, p5);
     let color = p5.color(255, 204, 0);
@@ -72,7 +81,14 @@ const P5Component = () => {
       }
     }
   }
-  return <Sketch setup={setup} draw={draw} />;
+  return (
+    <Sketch
+      preload={preload}
+      setup={setup}
+      draw={draw}
+      windowResized={windowResized}
+    />
+  );
 };
 
 export default P5Component;
