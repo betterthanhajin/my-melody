@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# my-melody: 소리가 시각이 되는 곳 🎵✨🖼️
 
-## Getting Started
+my-melody는 AI 기술을 활용하여 오디오를 시각적 예술로 변환하는 혁신적인 프로젝트입니다. 음악이나 음성을 독특하고 개인화된 앨범 커버 이미지로 변환하여, 청각적 경험을 시각적 걸작으로 만들어냅니다.
 
-First, run the development server:
+## 🌟 주요 기능
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 🎙️ **음성 인식**: 실시간으로 사용자의 음성을 인식하고 텍스트로 변환합니다.
+- 🖼️ **텍스트 to 이미지**: 변환된 텍스트를 바탕으로 AI가 독특한 이미지를 생성합니다.
+- 💿 **인터랙티브 CD 플레이어**: 사용자 친화적인 인터페이스로 음악 재생 및 제어가 가능합니다.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 기술 스택
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- ⚛️ React
+- 📘 TypeScript
+- 🎤 @ricky0123/vad-react: 음성 활동 감지(VAD) 라이브러리
+- 🎨 Material-UI: UI 컴포넌트
+- 🖌️ Lucide React: 아이콘
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🏁 시작하기
 
-## Learn More
+1. 저장소를 클론합니다:
+   ```
+   git clone https://github.com/your-username/my-melody.git
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. 의존성을 설치합니다:
+   ```
+   cd my-melody
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. 개발 서버를 실행합니다:
+   ```
+   npm run dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+4. 브라우저에서 `http://localhost:3000`을 열어 앱을 확인합니다.
 
-## Deploy on Vercel
+## 📖 사용 방법
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. 💿 CD 플레이어 인터페이스에서 음악을 재생합니다.
+2. 🎙️ 마이크 버튼을 클릭하여 음성 인식을 시작합니다.
+3. 🗣️ 말하면 자동으로 텍스트로 변환되어 표시됩니다.
+4. 🎨 변환된 텍스트를 바탕으로 AI가 독특한 이미지를 생성합니다.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## 🤝 기여하기
+
+프로젝트에 기여하고 싶으시다면 Pull Request를 보내주세요. 큰 변경사항의 경우, 먼저 이슈를 열어 논의해 주시기 바랍니다.
+
+## 📄 라이선스
+
+이 프로젝트는 [MIT 라이선스](LICENSE)를 따릅니다.
+
+---
+
+🎹🎨 my-melody와 함께 당신의 음악이 예술에 영감을 주고, 그 조화로움이 눈앞에서 생생하게 펼쳐지는 것을 경험하세요. 👀🌈
