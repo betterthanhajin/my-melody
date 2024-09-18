@@ -1,4 +1,4 @@
-
+"use client";
 import CDPlayer from "@/components/CDPlayer";
 
 export default function Home() {
