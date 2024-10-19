@@ -1,4 +1,5 @@
 "use client";
+import CDPlayer from "../CDPlayer";
 import Button from "../ui/button/Button";
 import MusicHistory from "../ui/MusicHistory";
 import MusicFooter from "./MusicFooter";
@@ -9,6 +10,7 @@ import MusicPlayList from "./MusicPlayList";
 export default function MusicContainer() {
   return (
     <section>
+      <CDPlayer musicTitle="music title" />
       <MusicHistory />
       <div className="flex items-center">
         <MusicMy
@@ -18,17 +20,6 @@ export default function MusicContainer() {
         />
         <Button />
       </div>
-
-      <hr />
-      <div className="flex items-center">
-        <MusicMy
-          myImageURL={undefined}
-          myTitle="START RADIO FROM A SONG"
-          mySubTitle="Quick picks"
-        />
-        <Button />
-      </div>
-
       <hr />
       <ul>
         {Array.from({ length: 10 }).map((_, index) => (
