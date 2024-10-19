@@ -14,7 +14,7 @@ import CardContent from "@mui/material/CardContent";
 import OutlinedButtons from "@/components/ui/OutlinedButtons";
 import ContinuousSlider from "@/components/ui/ContinuousSlider";
 import textToImage from "@/lib/api/image-create";
-import { blue, blueGrey } from "@mui/material/colors";
+import convertSpeechToText from "@/lib/hook/speech-to-text";
 
 const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -39,25 +39,6 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     },
     startOnLoad: false,
   });
-
-  const convertSpeechToText = async (audioUrl: string) => {
-    console.log("Converting speech to text");
-    const recognition = new (window as any).webkitSpeechRecognition();
-    recognition.lang = "ko-KR";
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onresult = (event: any) => {
-      const result = event.results[0][0].transcript;
-      setTranscription(result);
-      console.log("Transcription:", result);
-      textToImage(result);
-    };
-
-    recognition.onerror = (event: any) => {
-      console.error("Speech recognition error", event.error);
-    };
-  };
 
   const togglePlay = () => {
     setIsPlaying(!isPlaying);
@@ -149,19 +130,15 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           <div className="w-64">
             {/* <ContinuousSlider /> */}
             <p className="text-sm mb-1">voice to text</p>
+
             <input
               type="textarea"
               className="border-b border-[#282828] bg-black text-pink w-full
               h-16 p-2 rounded-md"
+              onChange={(e) => setTranscription(e.target.value)}
+              value={transcription}
             />
           </div>
-          {transcription && (
-            <div className="mt-4 p-2 bg-gray-100 rounded">
-              <p>
-                <strong>Transcription:</strong> {transcription}
-              </p>
-            </div>
-          )}
         </div>
       </CardContent>
       <style jsx>{`
