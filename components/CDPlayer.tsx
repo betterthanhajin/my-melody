@@ -14,6 +14,7 @@ import CardContent from "@mui/material/CardContent";
 import OutlinedButtons from "@/components/ui/OutlinedButtons";
 import ContinuousSlider from "@/components/ui/ContinuousSlider";
 import textToImage from "@/lib/api/image-create";
+import { blue, blueGrey } from "@mui/material/colors";
 
 const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -73,7 +74,19 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   };
 
   return (
-    <Card className="max-w-56 max-h-82 mx-auto bg-slate-950 text-white p-4 rounded-3xl">
+    <Card
+      sx={{
+        maxWidth: 280,
+        maxHeight: 410,
+        margin: "auto",
+        backgroundColor: "#282828", // slate-950 equivalent
+        color: "white",
+        padding: 5,
+        borderRadius: "1.5rem",
+        marginTop: 2,
+        marginBottom: 10,
+      }}
+    >
       <CardContent className="pt-6 pb-6 pr-3 pl-3">
         <div className="flex flex-col justify-center items-center space-y-6">
           <div className="relative w-full">
