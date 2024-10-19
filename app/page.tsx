@@ -6,12 +6,12 @@ import MusicHeader from "@/components/youtubeMusic/MusicHeader";
 export default function Home() {
   return (
     <>
-      <MusicHeader />
-      <main className="w-full h-full flex justify-center items-center p-24">
-        <CDPlayer musicTitle="music title" />
+      <main className="w-full h-full p-12">
+        <MusicHeader />
+        {/* <CDPlayer musicTitle="music title" /> */}
         <MusicContainer />
+        <MusicFooter />
       </main>
-      <MusicFooter />
     </>
   );
 }

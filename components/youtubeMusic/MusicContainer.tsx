@@ -1,5 +1,6 @@
 "use client";
 import Button from "../ui/button/Button";
+import MusicHistory from "../ui/MusicHistory";
 import MusicFooter from "./MusicFooter";
 import MusicHeader from "./MusicHeader";
 import MusicMy from "./MusicMy";
@@ -8,6 +9,7 @@ import MusicPlayList from "./MusicPlayList";
 export default function MusicContainer() {
   return (
     <section>
+      <MusicHistory />
       <div className="flex items-center">
         <MusicMy
           myImageURL={undefined}

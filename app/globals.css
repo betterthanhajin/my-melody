@@ -31,3 +31,8 @@ body {
     text-wrap: balance;
   }
 }
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
