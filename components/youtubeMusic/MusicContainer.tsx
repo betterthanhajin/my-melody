@@ -10,7 +10,6 @@ import MusicPlayList from "./MusicPlayList";
 export default function MusicContainer() {
   return (
     <section>
-      <CDPlayer musicTitle="music title" />
       <MusicHistory />
       <div className="flex items-center">
         <MusicMy

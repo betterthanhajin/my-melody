@@ -73,7 +73,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   };
 
   return (
-    <Card className="max-w-56 mx-auto bg-slate-950 text-white p-4 rounded-3xl">
+    <Card className="max-w-56 max-h-82 mx-auto bg-slate-950 text-white p-4 rounded-3xl">
       <CardContent className="pt-6 pb-6 pr-3 pl-3">
         <div className="flex flex-col justify-center items-center space-y-6">
           <div className="relative w-full">

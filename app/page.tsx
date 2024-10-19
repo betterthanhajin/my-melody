@@ -8,7 +8,7 @@ export default function Home() {
     <>
       <main className="w-full h-full p-12">
         <MusicHeader />
-        {/* <CDPlayer musicTitle="music title" /> */}
+        <CDPlayer musicTitle="my melody" />
         <MusicContainer />
         <MusicFooter />
       </main>
