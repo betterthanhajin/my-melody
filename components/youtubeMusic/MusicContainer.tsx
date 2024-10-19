@@ -1,3 +1,5 @@
+"use client";
+import Button from "../ui/button/Button";
 import MusicFooter from "./MusicFooter";
 import MusicHeader from "./MusicHeader";
 import MusicMy from "./MusicMy";
@@ -5,19 +7,26 @@ import MusicPlayList from "./MusicPlayList";
 
 export default function MusicContainer() {
   return (
-    <div>
-      <MusicHeader />
-      <MusicMy
-        myImageURL={undefined}
-        myTitle="Sufyan Ali"
-        mySubTitle="Listen Again"
-      />
+    <section>
+      <div className="flex items-center">
+        <MusicMy
+          myImageURL={undefined}
+          myTitle="Sufyan Ali"
+          mySubTitle="Listen Again"
+        />
+        <Button />
+      </div>
+
       <hr />
-      <MusicMy
-        myImageURL={undefined}
-        myTitle="START RADIO FROM A SONG"
-        mySubTitle="Quick picks"
-      />
+      <div className="flex items-center">
+        <MusicMy
+          myImageURL={undefined}
+          myTitle="START RADIO FROM A SONG"
+          mySubTitle="Quick picks"
+        />
+        <Button />
+      </div>
+
       <hr />
       <ul>
         {Array.from({ length: 10 }).map((_, index) => (
@@ -25,7 +34,6 @@ export default function MusicContainer() {
         ))}
         <MusicPlayList />
       </ul>
-      <MusicFooter />
-    </div>
+    </section>
   );
 }
