@@ -87,7 +87,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         marginBottom: 10,
       }}
     >
-      <CardContent className="pt-6 pb-6 pr-3 pl-3">
+      <CardContent className="pr-3 pl-3">
         <div className="flex flex-col justify-center items-center space-y-6">
           <div className="relative w-full">
             <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +118,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
                 {isPlaying ? (
                   <circle cx="170" cy="170" r="20" fill="#f44336" />
                 ) : (
-                  <circle cx="170" cy="170" r="15" fill="#4CAF50" />
+                  <circle cx="170" cy="170" r="15" fill="#db69c4" />
                 )}
                 {isPlaying ? (
                   // Pause icon
@@ -133,20 +133,27 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
               </g>
             </svg>
           </div>
-
-          <h3 className="text-xl font-bold text-center">{musicTitle}</h3>
-          <div onClick={hearingVoice}>
+          <div
+            className="flex flex-col justify-center items-center gap-2"
+            onClick={hearingVoice}
+          >
             {/* <OutlinedButtons> */}
             {isMicOn ? (
-              <MicOff size={20} />
+              <MicOff size={30} />
             ) : (
-              <Mic size={20} className="text-[#4CAF50]" />
+              <Mic size={30} className="text-[#db69c4]" />
             )}
             {/* </OutlinedButtons> */}
           </div>
 
-          <div className="w-48">
-            <ContinuousSlider />
+          <div className="w-64">
+            {/* <ContinuousSlider /> */}
+            <p className="text-sm mb-1">voice to text</p>
+            <input
+              type="textarea"
+              className="border-b border-[#282828] bg-black text-pink w-full
+              h-16 p-2 rounded-md"
+            />
           </div>
           {transcription && (
             <div className="mt-4 p-2 bg-gray-100 rounded">
