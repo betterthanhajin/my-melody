@@ -1,11 +1,11 @@
 "use client";
-import CDPlayer from "../CDPlayer";
+import CDPlayer from "../cd-player";
 import Button from "../ui/button/Button";
 import MusicHistory from "../ui/MusicHistory";
-import MusicFooter from "./MusicFooter";
-import MusicHeader from "./MusicHeader";
-import MusicMy from "./MusicMy";
-import MusicPlayList from "./MusicPlayList";
+import MusicFooter from "./music-footer";
+import MusicHeader from "./music-header";
+import MusicMy from "./music-my";
+import MusicPlayList from "./music-play-list";
 
 export default function MusicContainer() {
   return (

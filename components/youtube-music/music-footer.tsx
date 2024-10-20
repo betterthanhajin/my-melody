@@ -10,7 +10,7 @@ export default function MusicFooter() {
   const musicState = useMusicState();
   const [historyCount, setHistoryCount] = useState<number[]>([]);
   return (
-    <section className="mt-8 flex items-center justify-between">
+    <section className="fixed bottom-0 left-0 right-0 mt-8 flex items-center justify-between bg-black p-4">
       <button
         className="flex flex-col items-center gap-4"
         onClick={() => {

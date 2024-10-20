@@ -1,12 +1,12 @@
-import CDPlayer from "@/components/CDPlayer";
-import MusicContainer from "@/components/youtubeMusic/MusicContainer";
-import MusicFooter from "@/components/youtubeMusic/MusicFooter";
-import MusicHeader from "@/components/youtubeMusic/MusicHeader";
+import CDPlayer from "@/components/cd-player";
+import MusicContainer from "@/components/youtube-music/music-container";
+import MusicFooter from "@/components/youtube-music/music-footer";
+import MusicHeader from "@/components/youtube-music/music-header";
 
 export default function Home() {
   return (
     <>
-      <main className="w-full h-full p-12">
+      <main className="w-full h-full pl-4 pr-4">
         <MusicHeader />
         <CDPlayer musicTitle="my melody" />
         <MusicContainer />

@@ -2,7 +2,7 @@ import Image from "next/image";
 import youtubeLogo from "@/public/images/youtubeLogo.png";
 import youtubeSearch from "@/public/images/youtube-search.svg";
 import IU from "@/public/images/iu.webp";
-import MusicMy from "./MusicMy";
+import MusicMy from "./music-my";
 export default function MusicHeader() {
   return (
     <header className="w-full h-[20px] flex justify-between items-center mb-12">
