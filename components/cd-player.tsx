@@ -85,9 +85,9 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           marginBottom: 10,
         }}
       >
-        {!image ? (
-          <CardContent className="pr-3 pl-3">
-            <div className="flex flex-col justify-center items-center space-y-6">
+        <CardContent className="pr-3 pl-3">
+          <div className="flex flex-col justify-center items-center space-y-6">
+            {!image ? (
               <div className="relative w-full">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                   {/* CD Player body */}
@@ -144,40 +144,41 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
                   </g>
                 </svg>
               </div>
-              <div
-                className="flex flex-col justify-center items-center gap-2"
-                onClick={hearingVoice}
-              >
-                {/* <OutlinedButtons> */}
-                {isMicOn ? (
-                  <MicOff size={30} />
-                ) : (
-                  <Mic size={30} className="text-[#db69c4]" />
-                )}
-                {/* </OutlinedButtons> */}
+            ) : (
+              <div>
+                <img src={image} alt="album cover" width={280} height={280} />
               </div>
-
-              <div className="w-64">
-                {/* <ContinuousSlider /> */}
-                <p className="text-sm mb-1">voice to text</p>
-
-                <input
-                  type="textarea"
-                  className="border-b border-[#282828] bg-black text-pink w-full
-              h-16 p-2 rounded-md"
-                  onChange={(e) => {
-                    console.log(e.target.value);
-                  }}
-                  value={transcription}
-                />
-              </div>
+            )}
+            <div
+              className="flex flex-col justify-center items-center gap-2"
+              onClick={hearingVoice}
+            >
+              {/* <OutlinedButtons> */}
+              {isMicOn ? (
+                <MicOff size={30} />
+              ) : (
+                <Mic size={30} className="text-[#db69c4]" />
+              )}
+              {/* </OutlinedButtons> */}
             </div>
-          </CardContent>
-        ) : (
-          <div>
-            <img src={image} alt="album cover" width={280} height={280} />
+
+            <div className="max-w-52 w-52">
+              {/* <ContinuousSlider /> */}
+              <p className="text-sm mb-1">voice to text</p>
+
+              <input
+                type="textarea"
+                className="border-b border-[#282828] bg-black text-pink w-full
+              h-16 p-2 rounded-md"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                }}
+                value={transcription}
+              />
+            </div>
           </div>
-        )}
+        </CardContent>
+
         <style jsx>{`
           .cd {
             transform-origin: 100px 100px;

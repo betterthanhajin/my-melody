@@ -30,7 +30,9 @@ export default function MusicMy({
           <h3 className="font-extralight text-xs whitespace-nowrap">
             {myTitle ?? ""}
           </h3>
-          <p className="font-extrabold">{mySubTitle ?? ""}</p>
+          <p className="font-extrabold text-ellipsis overflow-hidden w-12 whitespace-nowrap">
+            {mySubTitle ?? ""}
+          </p>
         </div>
       </div>
     </section>

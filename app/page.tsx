@@ -6,7 +6,7 @@ import MusicHeader from "@/components/youtube-music/music-header";
 export default function Home() {
   return (
     <>
-      <main className="w-full h-full pl-4 pr-4">
+      <main className="mt-[80px] w-full h-full pl-4 pr-4">
         <MusicHeader />
         <CDPlayer musicTitle="my melody" />
         <MusicContainer />
