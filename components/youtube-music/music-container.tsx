@@ -9,7 +9,7 @@ import MusicPlayList from "./music-play-list";
 
 export default function MusicContainer() {
   return (
-    <section>
+    <section className="mb-[100px]">
       <MusicHistory />
       <div className="flex items-center">
         <MusicMy

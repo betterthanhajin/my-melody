@@ -4,12 +4,12 @@ import { useMicVAD, utils } from "@ricky0123/vad-react";
 import { Mic, MicOff } from "lucide-react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Image from "next/image";
 
 const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMicOn, setIsMicOn] = useState(false);
   const [image, setImage] = useState("");
+  const [url, setUrl] = useState("");
   const [transcription, setTranscription] = useState("");
   const [language, setLanguage] = useState("ko");
 
@@ -21,11 +21,14 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     modelURL: "https://static.llami.net/vad/silero_vad.onnx",
     workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
     onSpeechStart: () => {
-      console.log("Speech Start");
+      alert("Speech Start");
     },
     onSpeechEnd: async (audio: any) => {
-      console.log("Speech End");
+      alert("Speech End");
       const wavBuffer = utils.encodeWAV(audio);
+      playAudio(
+        URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" }))
+      );
       const base64 = utils.arrayBufferToBase64(wavBuffer);
       const audioSrc = `data:audio/wav;base64,${base64}`;
       const responseOfTTS = await fetch("/api/speech-to-text", {
@@ -48,6 +51,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
       const { generatedImageUrl } = await responseOfDALLE.json();
       console.log(generatedImageUrl);
+      setUrl(generatedImageUrl);
       setImage(generatedImageUrl);
     },
     ortConfig: (ort: any) => {
@@ -70,6 +74,13 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     setIsMicOn(!isMicOn);
   };
 
+  const playAudio = (audio: string) => {
+    const audioPlayer = new Audio(audio);
+    if (isPlaying) {
+      audioPlayer.play();
+    }
+  };
+
   return (
     <>
       <Card
@@ -79,29 +90,30 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           margin: "auto",
           backgroundColor: "#282828", // slate-950 equivalent
           color: "white",
-          padding: 5,
+          padding: "2rem",
           borderRadius: "1.5rem",
           marginTop: 2,
           marginBottom: 10,
         }}
+        className="lg:p-8 p-2"
       >
-        <CardContent className="pr-3 pl-3">
+        <CardContent>
           <div className="flex flex-col justify-center items-center space-y-6">
             {!image ? (
               <div className="relative w-full">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 250 200" xmlns="http://www.w3.org/2000/svg">
                   {/* CD Player body */}
-                  <circle cx="100" cy="100" r="100" fill="#333" />
+                  <circle cx="125" cy="100" r="100" fill="#333" />
 
                   {/* CD */}
                   <g className={`cd ${isPlaying ? "rotating" : ""}`}>
-                    <circle cx="100" cy="100" r="85" fill="#111" />
-                    <circle cx="100" cy="100" r="30" fill="#333" />
-                    <circle cx="100" cy="100" r="5" fill="#111" />
+                    <circle cx="125" cy="100" r="85" fill="#111" />
+                    <circle cx="125" cy="100" r="30" fill="#333" />
+                    <circle cx="125" cy="100" r="5" fill="#111" />
                     <line
-                      x1="100"
+                      x1="125"
                       y1="15"
-                      x2="100"
+                      x2="125"
                       y2="70"
                       stroke="#444"
                       strokeWidth="3"
@@ -145,9 +157,12 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
                 </svg>
               </div>
             ) : (
-              <div>
-                <img src={image} alt="album cover" width={280} height={280} />
-              </div>
+              <section>
+                <div>
+                  <img src={image} alt="album cover" width={280} height={280} />
+                </div>
+                <p>{url}</p>
+              </section>
             )}
             <div
               className="flex flex-col justify-center items-center gap-2"
@@ -157,19 +172,22 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
               {isMicOn ? (
                 <MicOff size={30} />
               ) : (
-                <Mic size={30} className="text-[#db69c4]" />
+                <Mic
+                  size={35}
+                  className="text-[#db69c4] lg:w-[45px] w-[25px]"
+                />
               )}
               {/* </OutlinedButtons> */}
             </div>
 
-            <div className="max-w-52 w-52">
+            <div className="max-w-full w-full text-md">
               {/* <ContinuousSlider /> */}
               <p className="text-sm mb-1">voice to text</p>
 
               <input
                 type="textarea"
                 className="border-b border-[#282828] bg-black text-pink w-full
-              h-16 p-2 rounded-md"
+              lg:h-20 h-16 p-2 rounded-md"
                 onChange={(e) => {
                   console.log(e.target.value);
                 }}
@@ -181,7 +199,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
         <style jsx>{`
           .cd {
-            transform-origin: 100px 100px;
+            transform-origin: 125px 100px;
             transition: transform 0.5s linear;
           }
           .rotating {
