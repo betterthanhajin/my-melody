@@ -21,10 +21,10 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     modelURL: "https://static.llami.net/vad/silero_vad.onnx",
     workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
     onSpeechStart: () => {
-      alert("Speech Start");
+      console.log("Speech Start");
     },
     onSpeechEnd: async (audio: any) => {
-      alert("Speech End");
+      console.log("Speech End");
       const wavBuffer = utils.encodeWAV(audio);
       playAudio(
         URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" }))
