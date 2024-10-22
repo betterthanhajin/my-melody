@@ -157,12 +157,9 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
                 </svg>
               </div>
             ) : (
-              <section>
-                <div>
-                  <img src={image} alt="album cover" width={280} height={280} />
-                </div>
-                <p>{url}</p>
-              </section>
+              <div>
+                <img src={image} alt="album cover" width={280} height={280} />
+              </div>
             )}
             <div
               className="flex flex-col justify-center items-center gap-2"
