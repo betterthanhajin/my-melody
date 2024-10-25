@@ -88,12 +88,12 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           maxWidth: 280,
           maxHeight: 410,
           margin: "auto",
-          backgroundColor: "#282828", // slate-950 equivalent
+          backgroundColor: "#b3b3b3",
           color: "white",
           padding: "2rem",
           borderRadius: "1.5rem",
           marginTop: 2,
-          marginBottom: 10,
+          marginBottom: "10px",
         }}
         className="lg:p-8 p-2"
       >
@@ -171,7 +171,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
               ) : (
                 <Mic
                   size={35}
-                  className="text-[#db69c4] lg:w-[45px] w-[25px]"
+                  className="text-[#db69c4] lg:w-[45px] w-[35px]"
                 />
               )}
               {/* </OutlinedButtons> */}
