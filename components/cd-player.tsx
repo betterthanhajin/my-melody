@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useMicVAD, utils } from "@ricky0123/vad-react";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, Loader2, ArrowLeft } from "lucide-react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import MusicContainer from "./youtube-music/music-container";
@@ -16,6 +16,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const [error, setError] = useState<string>("");
   const [audio, setAudio] = useState<string[]>([]);
   const [albumCover, setAlbumCover] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setLanguage(navigator.language);
@@ -26,7 +27,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
     onSpeechStart: () => {
       console.log("Speech Start");
-      setError(""); // Clear any previous errors
+      setError("");
     },
     onSpeechEnd: async (audio: any) => {
       try {
@@ -65,6 +66,8 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         const { text } = await responseOfTTS.json();
         setTranscription(text);
 
+        setIsLoading(true);
+
         let responseOfDALLE = await fetch("/api/create-image", {
           method: "POST",
           body: JSON.stringify({ requested_album_cover: text }),
@@ -74,6 +77,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         });
 
         if (!responseOfDALLE.ok) {
+          setIsLoading(false);
           console.log("Image generation failed");
           throw new Error(
             `Image generation failed: ${responseOfDALLE.statusText}`
@@ -82,10 +86,16 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
         const { generatedImageUrl } = await responseOfDALLE.json();
         console.log(generatedImageUrl);
+        if (generatedImageUrl === "") {
+          setIsLoading(false);
+          return;
+        }
         setAlbumCover((prevCover) => [...prevCover, generatedImageUrl]);
         setUrl(generatedImageUrl);
         setImage(generatedImageUrl);
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         setError(`Processing error: ${error}`);
         console.log("Processing error:" + error);
       }
@@ -124,6 +134,12 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     }
   };
 
+  const handleBack = () => {
+    setImage("");
+    setUrl("");
+    setTranscription("");
+  };
+
   return (
     <>
       <Card
@@ -148,8 +164,14 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
                 {error}
               </div>
             )}
-            {/* Rest of your existing JSX code ... */}
-            {!image ? (
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center h-full w-full bg-zinc-900 rounded-lg">
+                <Loader2 className="w-12 h-12 text-pink-500 animate-spin" />
+                <p className="mt-4 text-sm text-zinc-400">
+                  Generating album cover...
+                </p>
+              </div>
+            ) : !image ? (
               <div className="relative w-full">
                 <svg viewBox="0 0 250 200" xmlns="http://www.w3.org/2000/svg">
                   {/* CD Player body */}
@@ -207,7 +229,13 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
                 </svg>
               </div>
             ) : (
-              <div>
+              <div className="relative w-full">
+                <button
+                  onClick={handleBack}
+                  className="absolute top-2 left-2 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+                >
+                  <ArrowLeft className="w-6 h-6 text-white" />
+                </button>
                 <img src={image} alt="album cover" width={280} height={280} />
               </div>
             )}

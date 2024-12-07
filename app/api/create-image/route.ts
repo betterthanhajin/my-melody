@@ -10,7 +10,7 @@ export async function POST(request: Request) {
   });
 
   const { requested_album_cover } = await request.json();
-  let generatedImageUrl = "https://placehold.co/600x400";
+  let generatedImageUrl = "";
 
   try {
     const response = await openai.images.generate({

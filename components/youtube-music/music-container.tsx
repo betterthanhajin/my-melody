@@ -4,7 +4,7 @@ import MusicHistory from "../ui/MusicHistory";
 import MusicFooter from "./music-footer";
 import MusicHeader from "./music-header";
 import MusicMy from "./music-my";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Download } from "lucide-react";
 
 interface Track {
   audioUrl: string;
@@ -27,7 +27,6 @@ export default function MusicContainer({
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(-1);
 
   useEffect(() => {
-    // Combine audio and album cover URLs into track objects
     const newTracks = audio.map((audioUrl, index) => ({
       audioUrl,
       coverUrl: albumCover[index] || "/public/images/iu.webp",
@@ -37,7 +36,6 @@ export default function MusicContainer({
   }, [audio, albumCover]);
 
   useEffect(() => {
-    // Cleanup audio element on unmount
     return () => {
       if (audioElement) {
         audioElement.pause();
@@ -46,7 +44,24 @@ export default function MusicContainer({
     };
   }, []);
 
-  // Add this new function to handle playing all tracks
+  const downloadImage = async (imageUrl: string, index: number) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `my-melody-cover-${index + 1}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      alert("Failed to download image. Please try again.");
+    }
+  };
+
   const playAllTracks = () => {
     if (tracks.length === 0) return;
 
@@ -55,7 +70,6 @@ export default function MusicContainer({
     playTrack(tracks[startIndex]);
   };
 
-  // Modify the existing playTrack function
   const playTrack = (track: Track) => {
     if (audioElement) {
       audioElement.pause();
@@ -65,7 +79,6 @@ export default function MusicContainer({
     setAudioElement(newAudio);
     setCurrentTrack(track);
 
-    // Add ended event listener to play next track
     newAudio.addEventListener("ended", playNextTrack);
 
     newAudio
@@ -78,21 +91,18 @@ export default function MusicContainer({
       });
   };
 
-  // Add new function to handle playing next track
   const playNextTrack = () => {
     const nextIndex = currentTrackIndex + 1;
     if (nextIndex < tracks.length) {
       setCurrentTrackIndex(nextIndex);
       playTrack(tracks[nextIndex]);
     } else {
-      // Reset when all tracks are finished
       setCurrentTrackIndex(-1);
       setIsPlaying(false);
       setCurrentTrack(null);
     }
   };
 
-  // Clean up event listeners
   useEffect(() => {
     return () => {
       if (audioElement) {
@@ -150,20 +160,29 @@ export default function MusicContainer({
               <h3 className="text-sm font-medium">My Melody {index + 1}</h3>
               <p className="text-zinc-400 text-sm">My Melody</p>
             </div>
-            <button
-              onClick={() =>
-                currentTrack?.audioUrl === track.audioUrl
-                  ? togglePlayPause()
-                  : playTrack(track)
-              }
-              className="p-2 rounded-full bg-pink-600 hover:bg-pink-700 transition-colors"
-            >
-              {currentTrack?.audioUrl === track.audioUrl && isPlaying ? (
-                <Pause size={20} />
-              ) : (
-                <Play size={20} />
-              )}
-            </button>
+            <div className="flex space-x-2">
+              <button
+                onClick={() => downloadImage(track.coverUrl, index)}
+                className="p-2 rounded-full bg-zinc-700 hover:bg-zinc-600 transition-colors"
+                title="Download album cover"
+              >
+                <Download size={20} />
+              </button>
+              <button
+                onClick={() =>
+                  currentTrack?.audioUrl === track.audioUrl
+                    ? togglePlayPause()
+                    : playTrack(track)
+                }
+                className="p-2 rounded-full bg-pink-600 hover:bg-pink-700 transition-colors"
+              >
+                {currentTrack?.audioUrl === track.audioUrl && isPlaying ? (
+                  <Pause size={20} />
+                ) : (
+                  <Play size={20} />
+                )}
+              </button>
+            </div>
           </div>
         ))}
       </div>
