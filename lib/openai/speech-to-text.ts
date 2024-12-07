@@ -20,11 +20,11 @@ export async function speechToText({ audioSrc }: { audioSrc: string }) {
     "base64"
   );
 
+  console.log("voiceBuffer", voiceBuffer);
+
   const file = await toFile(voiceBuffer, `audio.${audioType}`, {
     type: `audio/${audioType}`,
   });
-
-  console.log(file);
 
   const transcription = await openai.audio.transcriptions.create({
     file,
