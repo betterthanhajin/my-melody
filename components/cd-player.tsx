@@ -12,47 +12,82 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const [url, setUrl] = useState("");
   const [transcription, setTranscription] = useState("");
   const [language, setLanguage] = useState("ko");
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     setLanguage(navigator.language);
+    checkMicrophoneSupport();
   }, []);
+
+  const checkMicrophoneSupport = async () => {
+    try {
+      // Check if getUserMedia is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error("Media devices API not supported");
+      }
+
+      // Request microphone permission
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (error) {
+      setError(`Microphone access error: ${error}`);
+      console.error("Microphone access error:", error);
+    }
+  };
 
   const vad = useMicVAD({
     modelURL: "https://static.llami.net/vad/silero_vad.onnx",
     workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
     onSpeechStart: () => {
       console.log("Speech Start");
+      setError(""); // Clear any previous errors
     },
     onSpeechEnd: async (audio: any) => {
-      console.log("Speech End");
-      const wavBuffer = utils.encodeWAV(audio);
-      playAudio(
-        URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" }))
-      );
-      const base64 = utils.arrayBufferToBase64(wavBuffer);
-      const audioSrc = `data:audio/wav;base64,${base64}`;
-      const responseOfTTS = await fetch("/api/speech-to-text", {
-        method: "POST",
-        body: JSON.stringify({ audioSrc, language }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const { text } = await responseOfTTS.json();
-      setTranscription(text);
+      try {
+        console.log("Speech End");
+        const wavBuffer = utils.encodeWAV(audio);
+        playAudio(
+          URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" }))
+        );
+        const base64 = utils.arrayBufferToBase64(wavBuffer);
+        const audioSrc = `data:audio/wav;base64,${base64}`;
 
-      let responseOfDALLE = await fetch("/api/create-image", {
-        method: "POST",
-        body: JSON.stringify({ requested_album_cover: text }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+        const responseOfTTS = await fetch("/api/speech-to-text", {
+          method: "POST",
+          body: JSON.stringify({ audioSrc, language }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
-      const { generatedImageUrl } = await responseOfDALLE.json();
-      console.log(generatedImageUrl);
-      setUrl(generatedImageUrl);
-      setImage(generatedImageUrl);
+        if (!responseOfTTS.ok) {
+          throw new Error(`Speech to text failed: ${responseOfTTS.statusText}`);
+        }
+
+        const { text } = await responseOfTTS.json();
+        setTranscription(text);
+
+        let responseOfDALLE = await fetch("/api/create-image", {
+          method: "POST",
+          body: JSON.stringify({ requested_album_cover: text }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!responseOfDALLE.ok) {
+          throw new Error(
+            `Image generation failed: ${responseOfDALLE.statusText}`
+          );
+        }
+
+        const { generatedImageUrl } = await responseOfDALLE.json();
+        console.log(generatedImageUrl);
+        setUrl(generatedImageUrl);
+        setImage(generatedImageUrl);
+      } catch (error) {
+        setError(`Processing error: ${error}`);
+        console.error("Processing error:", error);
+      }
     },
     ortConfig: (ort: any) => {
       ort.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@dev/dist/";
@@ -64,20 +99,28 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     setIsPlaying(!isPlaying);
   };
 
-  const hearingVoice = () => {
-    console.log(isMicOn);
-    if (!isMicOn) {
-      vad.start();
-    } else {
-      vad.pause();
+  const hearingVoice = async () => {
+    try {
+      if (!isMicOn) {
+        await checkMicrophoneSupport(); // Re-check permissions before starting
+        await vad.start();
+      } else {
+        await vad.pause();
+      }
+      setIsMicOn(!isMicOn);
+    } catch (error) {
+      setError(`Microphone error: ${error}`);
+      console.error("Microphone error:", error);
     }
-    setIsMicOn(!isMicOn);
   };
 
   const playAudio = (audio: string) => {
     const audioPlayer = new Audio(audio);
     if (isPlaying) {
-      audioPlayer.play();
+      audioPlayer.play().catch((err) => {
+        setError(`Audio playback error: ${err.message}`);
+        console.error("Audio playback error:", err);
+      });
     }
   };
 
@@ -100,6 +143,12 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
       >
         <CardContent>
           <div className="flex flex-col justify-center items-center space-y-6">
+            {error && (
+              <div className="text-red-500 text-sm text-center w-full">
+                {error}
+              </div>
+            )}
+            {/* Rest of your existing JSX code ... */}
             {!image ? (
               <div className="relative w-full">
                 <svg viewBox="0 0 250 200" xmlns="http://www.w3.org/2000/svg">
@@ -166,7 +215,6 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
               className="flex flex-col justify-center items-center gap-2"
               onClick={hearingVoice}
             >
-              {/* <OutlinedButtons> */}
               {isMicOn ? (
                 <MicOff size={30} />
               ) : (
@@ -177,13 +225,10 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
                   />
                 )
               )}
-              {/* </OutlinedButtons> */}
             </div>
             {!url && (
               <div className="max-w-full w-full text-md">
-                {/* <ContinuousSlider /> */}
                 <p className="text-sm mb-1">voice to text</p>
-
                 <input
                   type="textarea"
                   className="border-b border-[#282828] bg-black text-pink w-full
