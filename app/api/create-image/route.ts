@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       size: "1024x1024",
       quality: "standard",
       prompt: `Album Cover Design, Music Album, Album Cover Design
-[Album detail design requests]
+watercolor painting of a music album cover with a title "
 ${requested_album_cover}`,
     });
 
