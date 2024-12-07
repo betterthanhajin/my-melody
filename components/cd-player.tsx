@@ -23,6 +23,10 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     try {
       // Check if getUserMedia is supported
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert(
+          "Media devices API not supported" +
+            navigator.mediaDevices.getUserMedia
+        );
         throw new Error("Media devices API not supported");
       }
 
@@ -38,12 +42,12 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     modelURL: "https://static.llami.net/vad/silero_vad.onnx",
     workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
     onSpeechStart: () => {
-      console.log("Speech Start");
+      alert("Speech Start");
       setError(""); // Clear any previous errors
     },
     onSpeechEnd: async (audio: any) => {
       try {
-        console.log("Speech End");
+        alert("Speech End");
         const wavBuffer = utils.encodeWAV(audio);
         playAudio(
           URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" }))
@@ -61,6 +65,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
         if (!responseOfTTS.ok) {
           throw new Error(`Speech to text failed: ${responseOfTTS.statusText}`);
+          alert("Speech to text failed");
         }
 
         const { text } = await responseOfTTS.json();
@@ -78,6 +83,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           throw new Error(
             `Image generation failed: ${responseOfDALLE.statusText}`
           );
+          alert("Image generation failed");
         }
 
         const { generatedImageUrl } = await responseOfDALLE.json();
@@ -86,7 +92,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         setImage(generatedImageUrl);
       } catch (error) {
         setError(`Processing error: ${error}`);
-        console.error("Processing error:", error);
+        alert("Processing error:" + error);
       }
     },
     ortConfig: (ort: any) => {
