@@ -55,9 +55,12 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         const base64 = utils.arrayBufferToBase64(wavBuffer);
         const audioSrc = `data:audio/wav;base64,${base64}`;
 
+        alert(audioSrc);
+        alert(language);
+
         const responseOfTTS = await fetch("/api/speech-to-text", {
           method: "POST",
-          body: JSON.stringify({ audioSrc, language }),
+          body: JSON.stringify({ audioSrc }),
           headers: {
             "Content-Type": "application/json",
           },

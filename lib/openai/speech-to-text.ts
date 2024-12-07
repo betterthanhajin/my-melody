@@ -3,13 +3,7 @@ import OpenAI, { toFile } from "openai";
 // * Vercel 에서 최대 30초 동안 API를 실행하도록 요청하는 상수
 export const maxDuration = 30;
 
-export async function speechToText({
-  audioSrc,
-  language,
-}: {
-  audioSrc: string;
-  language?: string;
-}) {
+export async function speechToText({ audioSrc }: { audioSrc: string }) {
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
@@ -34,7 +28,6 @@ export async function speechToText({
     file,
     model: "whisper-1",
     response_format: "text",
-    language,
   });
 
   return transcription;
