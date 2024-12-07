@@ -7,9 +7,7 @@ export default function Button() {
       <button
         className="border-motion w-[100px] h-[42px] text-center rounded-2xl border-[1px] border-transparent p-2 cursor-pointer"
         ref={borderRef}
-        onClick={() => {
-          alert("Play all");
-        }}
+        onClick={() => {}}
       >
         <span className="whitespace-nowrap text-xs">Play all</span>
       </button>

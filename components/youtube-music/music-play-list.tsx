@@ -5,7 +5,7 @@ import moreVert from "@/public/images/more_vert.svg";
 
 export default function MusicPlayList() {
   return (
-    <li className="mt-4 flex justify-between items-center gap-2">
+    <li className="mt-4 flex justify-center items-center gap-3">
       <Image src={IU} alt="IU" width={60} height={60} />
       <div>
         <h3 className="lg:text-md text-xs">Listen Again</h3>

@@ -17,9 +17,7 @@ export default function MusicContainer() {
           myTitle="Sufyan Ali"
           mySubTitle="Listen Again"
         />
-        <Button />
       </div>
-      <hr />
       <ul>
         {Array.from({ length: 10 }).map((_, index) => (
           <MusicPlayList key={index} />

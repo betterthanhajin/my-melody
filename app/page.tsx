@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <>
       <MusicHeader />
-      <main className="mt-[80px] w-full h-full pl-4 pr-4">
+      <main className="mt-[80px] w-full h-full pl-2 pr-2">
         <CDPlayer musicTitle="my melody" />
         <MusicContainer />
       </main>

@@ -12,7 +12,7 @@ export default function MusicFooter() {
   return (
     <section className="fixed bottom-0 left-0 right-0 mt-8 flex items-center justify-between bg-black p-4">
       <button
-        className="flex flex-col items-center gap-4"
+        className="flex flex-col items-center gap-2"
         onClick={() => {
           console.log("Home");
           const newCount = 0;
@@ -23,11 +23,11 @@ export default function MusicFooter() {
           });
         }}
       >
-        <Image src={Home} alt="home" width={30} height={30} />
-        <p>Home</p>
+        <Image src={Home} alt="home" width={20} height={20} />
+        <p className="text-sm">Home</p>
       </button>
       <button
-        className="flex flex-col items-center justify-between gap-4"
+        className="flex flex-col items-center justify-between gap-2"
         onClick={() => {
           console.log("explore");
           const newCount = 0;
@@ -38,11 +38,11 @@ export default function MusicFooter() {
           });
         }}
       >
-        <Image src={explore} alt="explore" width={30} height={30} />
-        <p>explore</p>
+        <Image src={explore} alt="explore" width={20} height={20} />
+        <p className="text-sm">explore</p>
       </button>
       <button
-        className="flex flex-col items-center justify-between gap-4"
+        className="flex flex-col items-center justify-between gap-2"
         onClick={() => {
           console.log("library");
           const newCount = 0;
@@ -53,8 +53,8 @@ export default function MusicFooter() {
           });
         }}
       >
-        <Image src={library} alt="home" width={30} height={30} />
-        <p>library</p>
+        <Image src={library} alt="home" width={20} height={20} />
+        <p className="text-sm">library</p>
       </button>
     </section>
   );

@@ -88,9 +88,10 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           maxWidth: 280,
           maxHeight: 410,
           margin: "auto",
-          backgroundColor: "#b3b3b3",
+          backgroundColor: "#282828",
+          backdropFilter: "blur(30px)",
           color: "white",
-          padding: "2rem",
+          padding: "1rem",
           borderRadius: "1.5rem",
           marginTop: 2,
           marginBottom: "10px",
@@ -169,28 +170,31 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
               {isMicOn ? (
                 <MicOff size={30} />
               ) : (
-                <Mic
-                  size={35}
-                  className="text-[#db69c4] lg:w-[45px] w-[35px]"
-                />
+                !url && (
+                  <Mic
+                    size={35}
+                    className="text-[#db69c4] lg:w-[45px] w-[35px]"
+                  />
+                )
               )}
               {/* </OutlinedButtons> */}
             </div>
+            {!url && (
+              <div className="max-w-full w-full text-md">
+                {/* <ContinuousSlider /> */}
+                <p className="text-sm mb-1">voice to text</p>
 
-            <div className="max-w-full w-full text-md">
-              {/* <ContinuousSlider /> */}
-              <p className="text-sm mb-1">voice to text</p>
-
-              <input
-                type="textarea"
-                className="border-b border-[#282828] bg-black text-pink w-full
+                <input
+                  type="textarea"
+                  className="border-b border-[#282828] bg-black text-pink w-full
               lg:h-20 h-16 p-2 rounded-md"
-                onChange={(e) => {
-                  console.log(e.target.value);
-                }}
-                value={transcription}
-              />
-            </div>
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                  }}
+                  value={transcription}
+                />
+              </div>
+            )}
           </div>
         </CardContent>
 
