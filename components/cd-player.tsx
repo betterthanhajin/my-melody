@@ -4,6 +4,7 @@ import { useMicVAD, utils } from "@ricky0123/vad-react";
 import { Mic, MicOff } from "lucide-react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import MusicContainer from "./youtube-music/music-container";
 
 const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -13,6 +14,8 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const [transcription, setTranscription] = useState("");
   const [language, setLanguage] = useState("ko");
   const [error, setError] = useState<string>("");
+  const [audio, setAudio] = useState<string[]>([]);
+  const [albumCover, setAlbumCover] = useState<string[]>([]);
 
   useEffect(() => {
     setLanguage(navigator.language);
@@ -29,6 +32,10 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
       try {
         console.log("Speech End");
         const wavBuffer = utils.encodeWAV(audio);
+        setAudio((prevAudio) => [
+          ...prevAudio,
+          URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" })),
+        ]);
         playAudio(
           URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" }))
         );
@@ -75,6 +82,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
         const { generatedImageUrl } = await responseOfDALLE.json();
         console.log(generatedImageUrl);
+        setAlbumCover((prevCover) => [...prevCover, generatedImageUrl]);
         setUrl(generatedImageUrl);
         setImage(generatedImageUrl);
       } catch (error) {
@@ -234,7 +242,6 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
             )}
           </div>
         </CardContent>
-
         <style jsx>{`
           .cd {
             transform-origin: 125px 100px;
@@ -253,6 +260,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           }
         `}</style>
       </Card>
+      <MusicContainer audio={audio} albumCover={albumCover} />
     </>
   );
 };
