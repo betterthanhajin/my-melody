@@ -22,12 +22,12 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     modelURL: "https://static.llami.net/vad/silero_vad.onnx",
     workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
     onSpeechStart: () => {
-      alert("Speech Start");
+      console.log("Speech Start");
       setError(""); // Clear any previous errors
     },
     onSpeechEnd: async (audio: any) => {
       try {
-        alert("Speech End");
+        console.log("Speech End");
         const wavBuffer = utils.encodeWAV(audio);
         playAudio(
           URL.createObjectURL(new Blob([wavBuffer], { type: "audio/wav" }))
@@ -37,15 +37,15 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
         const responseOfTTS = await fetch("/api/speech-to-text", {
           method: "POST",
-          body: JSON.stringify({ audioSrc }),
+          body: JSON.stringify({ audioSrc, language }),
           headers: {
             "Content-Type": "application/json",
           },
         });
 
         if (!responseOfTTS.ok) {
-          alert("Speech to text failed");
-          alert(
+          console.log("Speech to text failed");
+          console.log(
             responseOfTTS.ok +
               "," +
               responseOfTTS.status +
@@ -67,7 +67,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         });
 
         if (!responseOfDALLE.ok) {
-          alert("Image generation failed");
+          console.log("Image generation failed");
           throw new Error(
             `Image generation failed: ${responseOfDALLE.statusText}`
           );
@@ -79,7 +79,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         setImage(generatedImageUrl);
       } catch (error) {
         setError(`Processing error: ${error}`);
-        alert("Processing error:" + error);
+        console.log("Processing error:" + error);
       }
     },
     ortConfig: (ort: any) => {
