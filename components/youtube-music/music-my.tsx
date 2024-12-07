@@ -8,12 +8,14 @@ interface MusicMyProps {
   myImageURL?: StaticImageData | undefined;
   myTitle?: string | undefined;
   mySubTitle?: string | undefined;
+  onPlayAll: () => void;
 }
 
 export default function MusicMy({
   myImageURL,
   myTitle,
   mySubTitle,
+  onPlayAll,
 }: MusicMyProps) {
   return (
     <>
@@ -38,7 +40,7 @@ export default function MusicMy({
               </p>
             </div>
           </div>
-          <Button />
+          <Button onPlayAll={onPlayAll} />
         </div>
       </section>
     </>

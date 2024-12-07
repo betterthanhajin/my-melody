@@ -1,6 +1,5 @@
+"use client";
 import { useEffect, useState } from "react";
-import CDPlayer from "../cd-player";
-import Button from "../ui/button/Button";
 import MusicHistory from "../ui/MusicHistory";
 import MusicFooter from "./music-footer";
 import MusicHeader from "./music-header";
@@ -25,6 +24,7 @@ export default function MusicContainer({
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
     null
   );
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(-1);
 
   useEffect(() => {
     // Combine audio and album cover URLs into track objects
@@ -46,6 +46,16 @@ export default function MusicContainer({
     };
   }, []);
 
+  // Add this new function to handle playing all tracks
+  const playAllTracks = () => {
+    if (tracks.length === 0) return;
+
+    const startIndex = 0;
+    setCurrentTrackIndex(startIndex);
+    playTrack(tracks[startIndex]);
+  };
+
+  // Modify the existing playTrack function
   const playTrack = (track: Track) => {
     if (audioElement) {
       audioElement.pause();
@@ -54,6 +64,9 @@ export default function MusicContainer({
     const newAudio = new Audio(track.audioUrl);
     setAudioElement(newAudio);
     setCurrentTrack(track);
+
+    // Add ended event listener to play next track
+    newAudio.addEventListener("ended", playNextTrack);
 
     newAudio
       .play()
@@ -64,6 +77,34 @@ export default function MusicContainer({
         console.error("Error playing audio:", error);
       });
   };
+
+  // Add new function to handle playing next track
+  const playNextTrack = () => {
+    const nextIndex = currentTrackIndex + 1;
+    if (nextIndex < tracks.length) {
+      setCurrentTrackIndex(nextIndex);
+      playTrack(tracks[nextIndex]);
+    } else {
+      // Reset when all tracks are finished
+      setCurrentTrackIndex(-1);
+      setIsPlaying(false);
+      setCurrentTrack(null);
+    }
+  };
+
+  // Clean up event listeners
+  useEffect(() => {
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener("ended", playNextTrack);
+        audioElement.pause();
+        setCurrentTrackIndex(0);
+        setIsPlaying(false);
+        setCurrentTrack(null);
+        audioElement.src = "";
+      }
+    };
+  }, [audioElement]);
 
   const togglePlayPause = () => {
     if (!audioElement || !currentTrack) return;
@@ -86,9 +127,9 @@ export default function MusicContainer({
           myImageURL={undefined}
           myTitle="My Melody"
           mySubTitle="Listen Again"
+          onPlayAll={playAllTracks}
         />
       </div>
-
       <div className="space-y-4">
         {tracks.length === 0 && (
           <p className="text-center text-sm text-zinc-400">
@@ -106,8 +147,8 @@ export default function MusicContainer({
               className="w-16 h-16 rounded-md object-cover"
             />
             <div className="flex-grow">
-              <h3 className="text-sm font-medium">Recording {index + 1}</h3>
-              <p className="text-zinc-400 text-sm">Voice Recording</p>
+              <h3 className="text-sm font-medium">My Melody {index + 1}</h3>
+              <p className="text-zinc-400 text-sm">My Melody</p>
             </div>
             <button
               onClick={() =>
