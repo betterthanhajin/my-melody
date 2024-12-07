@@ -5,7 +5,7 @@ import MusicFooter from "./music-footer";
 import MusicHeader from "./music-header";
 import MusicMy from "./music-my";
 import { Play, Pause, Download } from "lucide-react";
-
+import IU from "@/public/images/iu.webp";
 interface Track {
   audioUrl: string;
   coverUrl: string;
@@ -29,7 +29,7 @@ export default function MusicContainer({
   useEffect(() => {
     const newTracks = audio.map((audioUrl, index) => ({
       audioUrl,
-      coverUrl: albumCover[index] || "/public/images/iu.webp",
+      coverUrl: albumCover[index] || `${IU}`,
     }));
 
     setTracks(newTracks);
@@ -67,20 +67,24 @@ export default function MusicContainer({
 
     const startIndex = 0;
     setCurrentTrackIndex(startIndex);
-    playTrack(tracks[startIndex]);
+    playTrack(tracks[startIndex], startIndex);
   };
-
-  const playTrack = (track: Track) => {
+  const playTrack = (track: Track, index: number) => {
+    // 이전 오디오 정리
     if (audioElement) {
       audioElement.pause();
+      audioElement.removeEventListener("ended", playNextTrack);
     }
 
+    // 새 오디오 요소 생성
     const newAudio = new Audio(track.audioUrl);
-    setAudioElement(newAudio);
-    setCurrentTrack(track);
-
     newAudio.addEventListener("ended", playNextTrack);
 
+    setAudioElement(newAudio);
+    setCurrentTrack(track);
+    setCurrentTrackIndex(index);
+
+    // 재생 시작
     newAudio
       .play()
       .then(() => {
@@ -88,33 +92,25 @@ export default function MusicContainer({
       })
       .catch((error) => {
         console.error("Error playing audio:", error);
+        setIsPlaying(false);
       });
   };
 
   const playNextTrack = () => {
     const nextIndex = currentTrackIndex + 1;
     if (nextIndex < tracks.length) {
-      setCurrentTrackIndex(nextIndex);
-      playTrack(tracks[nextIndex]);
+      playTrack(tracks[nextIndex], nextIndex);
     } else {
+      // 마지막 트랙이 끝나면 초기화
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+      }
       setCurrentTrackIndex(-1);
       setIsPlaying(false);
       setCurrentTrack(null);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener("ended", playNextTrack);
-        audioElement.pause();
-        setCurrentTrackIndex(0);
-        setIsPlaying(false);
-        setCurrentTrack(null);
-        audioElement.src = "";
-      }
-    };
-  }, [audioElement]);
 
   const togglePlayPause = () => {
     if (!audioElement || !currentTrack) return;
@@ -126,6 +122,18 @@ export default function MusicContainer({
     }
     setIsPlaying(!isPlaying);
   };
+
+  // cleanup effect
+  useEffect(() => {
+    return () => {
+      if (audioElement) {
+        audioElement.removeEventListener("ended", playNextTrack);
+        audioElement.pause();
+        setIsPlaying(false);
+        setCurrentTrack(null);
+      }
+    };
+  }, [audioElement]);
 
   return (
     <section className="mb-[100px] p-4 text-white">
@@ -169,18 +177,10 @@ export default function MusicContainer({
                 <Download size={20} />
               </button>
               <button
-                onClick={() =>
-                  currentTrack?.audioUrl === track.audioUrl
-                    ? togglePlayPause()
-                    : playTrack(track)
-                }
+                onClick={() => playTrack(track, index)}
                 className="p-2 rounded-full bg-pink-600 hover:bg-pink-700 transition-colors"
               >
-                {currentTrack?.audioUrl === track.audioUrl && isPlaying ? (
-                  <Pause size={20} />
-                ) : (
-                  <Play size={20} />
-                )}
+                {isPlaying ? <Play size={20} /> : <Pause size={20} />}
               </button>
             </div>
           </div>
