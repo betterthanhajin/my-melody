@@ -16,27 +16,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
   useEffect(() => {
     setLanguage(navigator.language);
-    checkMicrophoneSupport();
   }, []);
-
-  const checkMicrophoneSupport = async () => {
-    try {
-      // Check if getUserMedia is supported
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert(
-          "Media devices API not supported" +
-            navigator.mediaDevices.getUserMedia
-        );
-        throw new Error("Media devices API not supported");
-      }
-
-      // Request microphone permission
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (error) {
-      setError(`Microphone access error: ${error}`);
-      console.error("Microphone access error:", error);
-    }
-  };
 
   const vad = useMicVAD({
     modelURL: "https://static.llami.net/vad/silero_vad.onnx",
@@ -75,8 +55,7 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           throw new Error(`Speech to text failed: ${responseOfTTS.statusText}`);
         }
 
-        const text = await responseOfTTS.text();
-        alert("Text" + text);
+        const { text } = await responseOfTTS.json();
         setTranscription(text);
 
         let responseOfDALLE = await fetch("/api/create-image", {
@@ -116,7 +95,6 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   const hearingVoice = async () => {
     try {
       if (!isMicOn) {
-        await checkMicrophoneSupport(); // Re-check permissions before starting
         await vad.start();
       } else {
         await vad.pause();
