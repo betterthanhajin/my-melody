@@ -30,7 +30,7 @@ export default function MusicContainer({
     // Combine audio and album cover URLs into track objects
     const newTracks = audio.map((audioUrl, index) => ({
       audioUrl,
-      coverUrl: albumCover[index] || "/default-cover.jpg",
+      coverUrl: albumCover[index] || "/public/images/iu.webp",
     }));
 
     setTracks(newTracks);
@@ -81,15 +81,20 @@ export default function MusicContainer({
       <MusicHeader />
       <MusicHistory />
 
-      <div className="flex items-center mb-6">
+      <div className="mb-6">
         <MusicMy
           myImageURL={undefined}
-          myTitle="My Recordings"
+          myTitle="My Melody"
           mySubTitle="Listen Again"
         />
       </div>
 
       <div className="space-y-4">
+        {tracks.length === 0 && (
+          <p className="text-center text-sm text-zinc-400">
+            No recordings available
+          </p>
+        )}
         {tracks.map((track, index) => (
           <div
             key={track.audioUrl}
@@ -101,7 +106,7 @@ export default function MusicContainer({
               className="w-16 h-16 rounded-md object-cover"
             />
             <div className="flex-grow">
-              <h3 className="text-lg font-medium">Recording {index + 1}</h3>
+              <h3 className="text-sm font-medium">Recording {index + 1}</h3>
               <p className="text-zinc-400 text-sm">Voice Recording</p>
             </div>
             <button

@@ -17,9 +17,9 @@ export default function MusicMy({
 }: MusicMyProps) {
   return (
     <>
-      <section className="mt-4 w-full h-[52px] flex justify-center gap-8">
-        <div className="flex gap-4 border-b border-[#282828]">
-          <div className="flex gap-4">
+      <section className="mt-4 h-[52px] w-full flex items-center space-x-4 p-4">
+        <div className="flex flex-grow gap-4 border-b border-[#282828]">
+          <div className="flex gap-4 flex-grow mb-3">
             <div>
               <Image
                 src={myImageURL ?? test}
@@ -33,7 +33,7 @@ export default function MusicMy({
               <h3 className="font-extralight text-xs whitespace-nowrap">
                 {myTitle ?? ""}
               </h3>
-              <p className="font-extrabold text-ellipsis overflow-hidden w-12 whitespace-nowrap">
+              <p className="font-extrabold text-ellipsis overflow-hidden w-20 whitespace-nowrap">
                 {mySubTitle ?? ""}
               </p>
             </div>
