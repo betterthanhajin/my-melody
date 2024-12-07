@@ -66,9 +66,11 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
           },
         });
 
+        alert(responseOfTTS);
+
         if (!responseOfTTS.ok) {
-          throw new Error(`Speech to text failed: ${responseOfTTS.statusText}`);
           alert("Speech to text failed");
+          throw new Error(`Speech to text failed: ${responseOfTTS.statusText}`);
         }
 
         const { text } = await responseOfTTS.json();
@@ -83,10 +85,10 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         });
 
         if (!responseOfDALLE.ok) {
+          alert("Image generation failed");
           throw new Error(
             `Image generation failed: ${responseOfDALLE.statusText}`
           );
-          alert("Image generation failed");
         }
 
         const { generatedImageUrl } = await responseOfDALLE.json();
