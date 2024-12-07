@@ -68,7 +68,13 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
 
         if (!responseOfTTS.ok) {
           alert("Speech to text failed");
-          alert(responseOfTTS.ok + "," + responseOfTTS.status);
+          alert(
+            responseOfTTS.ok +
+              "," +
+              responseOfTTS.status +
+              "," +
+              responseOfTTS.statusText
+          );
           throw new Error(`Speech to text failed: ${responseOfTTS.statusText}`);
         }
 

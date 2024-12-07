@@ -24,12 +24,14 @@ export async function speechToText({ audioSrc }: { audioSrc: string }) {
     type: `audio/${audioType}`,
   });
 
+  console.log(file);
+
   const transcription = await openai.audio.transcriptions.create({
     file,
     model: "whisper-1",
     response_format: "text",
   });
-
+  console.log(transcription);
   return transcription;
 }
 

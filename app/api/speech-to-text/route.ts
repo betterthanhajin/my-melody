@@ -4,5 +4,6 @@ export const maxDuration = 30;
 export async function POST(request: Request) {
   const { audioSrc } = await request.json();
   const text = await speechToText({ audioSrc });
+  console.log(text);
   return Response.json({ text });
 }
