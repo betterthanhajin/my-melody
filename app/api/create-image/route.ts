@@ -17,8 +17,7 @@ export async function POST(request: Request) {
       model: "dall-e-3",
       size: "1024x1024",
       quality: "standard",
-      prompt: `Album Cover Design, Music Album, Album Cover Design
-watercolor painting of a music album cover with a title "
+      prompt: `Create Album Cover.watercolor painting of a music album cover with a title. Please write the album title in the correct words."
 ${requested_album_cover}`,
     });
 

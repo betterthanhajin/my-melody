@@ -27,11 +27,13 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
     onSpeechStart: () => {
       console.log("Speech Start");
+      console.log("음성인식중입니다");
       setError("");
     },
     onSpeechEnd: async (audio: any) => {
       try {
         console.log("Speech End");
+        setIsMicOn(false);
         const wavBuffer = utils.encodeWAV(audio);
         setAudio((prevAudio) => [
           ...prevAudio,

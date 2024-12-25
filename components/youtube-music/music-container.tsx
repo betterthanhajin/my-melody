@@ -6,6 +6,7 @@ import MusicHeader from "./music-header";
 import MusicMy from "./music-my";
 import { Play, Pause, Download } from "lucide-react";
 import IU from "@/public/images/iu.webp";
+
 interface Track {
   audioUrl: string;
   coverUrl: string;
@@ -20,7 +21,6 @@ export default function MusicContainer({
 }) {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
     null
   );
@@ -29,7 +29,7 @@ export default function MusicContainer({
   useEffect(() => {
     const newTracks = audio.map((audioUrl, index) => ({
       audioUrl,
-      coverUrl: albumCover[index] || `${IU}`,
+      coverUrl: albumCover[index] ? albumCover[index] : `${IU}`,
     }));
 
     setTracks(newTracks);
@@ -69,14 +69,43 @@ export default function MusicContainer({
     setCurrentTrackIndex(startIndex);
     playTrack(tracks[startIndex], startIndex);
   };
+
+  const playNextTrack = () => {
+    const nextIndex = currentTrackIndex + 1;
+    if (nextIndex < tracks.length) {
+      playTrack(tracks[nextIndex], nextIndex);
+    } else {
+      // Reset when the last track ends
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+      }
+      setCurrentTrackIndex(-1);
+      setCurrentTrack(null);
+    }
+  };
+
   const playTrack = (track: Track, index: number) => {
-    // 이전 오디오 정리
+    if (currentTrackIndex === index && audioElement) {
+      if (!audioElement.paused) {
+        audioElement.pause();
+        setCurrentTrackIndex(-1);
+        setCurrentTrack(null);
+        return;
+      }
+      audioElement.play();
+      setCurrentTrackIndex(index);
+      setCurrentTrack(track);
+      return;
+    }
+
+    // Clean up previous audio
     if (audioElement) {
       audioElement.pause();
       audioElement.removeEventListener("ended", playNextTrack);
     }
 
-    // 새 오디오 요소 생성
+    // Create new audio element
     const newAudio = new Audio(track.audioUrl);
     newAudio.addEventListener("ended", playNextTrack);
 
@@ -84,52 +113,16 @@ export default function MusicContainer({
     setCurrentTrack(track);
     setCurrentTrackIndex(index);
 
-    // 재생 시작
-    newAudio
-      .play()
-      .then(() => {
-        setIsPlaying(true);
-      })
-      .catch((error) => {
-        console.error("Error playing audio:", error);
-        setIsPlaying(false);
-      });
+    // Start playing
+    newAudio.play();
   };
 
-  const playNextTrack = () => {
-    const nextIndex = currentTrackIndex + 1;
-    if (nextIndex < tracks.length) {
-      playTrack(tracks[nextIndex], nextIndex);
-    } else {
-      // 마지막 트랙이 끝나면 초기화
-      if (audioElement) {
-        audioElement.pause();
-        audioElement.currentTime = 0;
-      }
-      setCurrentTrackIndex(-1);
-      setIsPlaying(false);
-      setCurrentTrack(null);
-    }
-  };
-
-  const togglePlayPause = () => {
-    if (!audioElement || !currentTrack) return;
-
-    if (isPlaying) {
-      audioElement.pause();
-    } else {
-      audioElement.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  // cleanup effect
+  // Cleanup effect
   useEffect(() => {
     return () => {
       if (audioElement) {
         audioElement.removeEventListener("ended", playNextTrack);
         audioElement.pause();
-        setIsPlaying(false);
         setCurrentTrack(null);
       }
     };
@@ -160,7 +153,7 @@ export default function MusicContainer({
             className="flex items-center space-x-4 p-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 transition-colors"
           >
             <img
-              src={track.coverUrl}
+              src={track.coverUrl ? track.coverUrl : `${IU}`}
               alt="Album cover"
               className="w-16 h-16 rounded-md object-cover"
             />
@@ -180,7 +173,11 @@ export default function MusicContainer({
                 onClick={() => playTrack(track, index)}
                 className="p-2 rounded-full bg-pink-600 hover:bg-pink-700 transition-colors"
               >
-                {isPlaying ? <Play size={20} /> : <Pause size={20} />}
+                {currentTrackIndex === index ? (
+                  <Pause size={20} />
+                ) : (
+                  <Play size={20} />
+                )}
               </button>
             </div>
           </div>
