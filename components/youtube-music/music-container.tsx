@@ -1,11 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import MusicHistory from "../ui/MusicHistory";
 import MusicFooter from "./music-footer";
 import MusicHeader from "./music-header";
 import MusicMy from "./music-my";
 import { Play, Pause, Download } from "lucide-react";
 import IU from "@/public/images/iu.webp";
+import next from "next";
 
 interface Track {
   audioUrl: string;
@@ -25,6 +26,7 @@ export default function MusicContainer({
     null
   );
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number>(-1);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
   useEffect(() => {
     const newTracks = audio.map((audioUrl, index) => ({
@@ -34,15 +36,80 @@ export default function MusicContainer({
 
     setTracks(newTracks);
   }, [audio, albumCover]);
-
-  useEffect(() => {
-    return () => {
+  let index = 0;
+  const playNextTrack = useCallback(() => {
+    if (index < tracks.length) {
+      for (let i = 0; i < tracks.length; i++) {
+        playTrack(tracks[i], i);
+      }
+    } else {
       if (audioElement) {
         audioElement.pause();
-        audioElement.src = "";
+        audioElement.currentTime = 0;
+      }
+      setCurrentTrackIndex(-1);
+      setCurrentTrack(null);
+      setIsPlaying(false);
+    }
+  }, [currentTrackIndex, tracks, audioElement]);
+
+  useEffect(() => {
+    const currentAudio = audioElement;
+    return () => {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.removeEventListener("ended", playNextTrack);
       }
     };
-  }, []);
+  }, [audioElement, playNextTrack]);
+
+  const playTrack = async (track: Track, index: number) => {
+    try {
+      // If clicking the same track
+      if (currentTrackIndex === index && audioElement) {
+        if (!audioElement.paused) {
+          audioElement.pause();
+          setIsPlaying(false);
+          return;
+        } else {
+          await audioElement.play();
+          setIsPlaying(true);
+          return;
+        }
+      }
+
+      // Clean up previous audio
+      if (audioElement) {
+        audioElement.pause();
+        audioElement.removeEventListener("ended", playNextTrack);
+      }
+
+      // Create and set up new audio element
+      const newAudio = new Audio(track.audioUrl);
+      newAudio.addEventListener("ended", playNextTrack);
+
+      // Wait for the audio to be loaded
+      await new Promise((resolve) => {
+        newAudio.addEventListener("loadeddata", resolve, { once: true });
+      });
+
+      setAudioElement(newAudio);
+      setCurrentTrack(track);
+      setCurrentTrackIndex(index);
+
+      // Start playing
+      await newAudio.play();
+    } catch (error) {
+      console.error("Error playing audio:", error);
+      alert("Failed to play audio. Please check the audio URL and try again.");
+    }
+  };
+
+  const playAllTracks = () => {
+    if (tracks.length === 0) return;
+    const startIndex = 0;
+    playNextTrack();
+  };
 
   const downloadImage = async (imageUrl: string, index: number) => {
     try {
@@ -61,72 +128,6 @@ export default function MusicContainer({
       alert("Failed to download image. Please try again.");
     }
   };
-
-  const playAllTracks = () => {
-    if (tracks.length === 0) return;
-
-    const startIndex = 0;
-    setCurrentTrackIndex(startIndex);
-    playTrack(tracks[startIndex], startIndex);
-  };
-
-  const playNextTrack = () => {
-    const nextIndex = currentTrackIndex + 1;
-    if (nextIndex < tracks.length) {
-      playTrack(tracks[nextIndex], nextIndex);
-    } else {
-      // Reset when the last track ends
-      if (audioElement) {
-        audioElement.pause();
-        audioElement.currentTime = 0;
-      }
-      setCurrentTrackIndex(-1);
-      setCurrentTrack(null);
-    }
-  };
-
-  const playTrack = (track: Track, index: number) => {
-    if (currentTrackIndex === index && audioElement) {
-      if (!audioElement.paused) {
-        audioElement.pause();
-        setCurrentTrackIndex(-1);
-        setCurrentTrack(null);
-        return;
-      }
-      audioElement.play();
-      setCurrentTrackIndex(index);
-      setCurrentTrack(track);
-      return;
-    }
-
-    // Clean up previous audio
-    if (audioElement) {
-      audioElement.pause();
-      audioElement.removeEventListener("ended", playNextTrack);
-    }
-
-    // Create new audio element
-    const newAudio = new Audio(track.audioUrl);
-    newAudio.addEventListener("ended", playNextTrack);
-
-    setAudioElement(newAudio);
-    setCurrentTrack(track);
-    setCurrentTrackIndex(index);
-
-    // Start playing
-    newAudio.play();
-  };
-
-  // Cleanup effect
-  useEffect(() => {
-    return () => {
-      if (audioElement) {
-        audioElement.removeEventListener("ended", playNextTrack);
-        audioElement.pause();
-        setCurrentTrack(null);
-      }
-    };
-  }, [audioElement]);
 
   return (
     <section className="mb-[100px] p-4 text-white">
@@ -173,7 +174,7 @@ export default function MusicContainer({
                 onClick={() => playTrack(track, index)}
                 className="p-2 rounded-full bg-pink-600 hover:bg-pink-700 transition-colors"
               >
-                {currentTrackIndex === index ? (
+                {currentTrackIndex === index && isPlaying ? (
                   <Pause size={20} />
                 ) : (
                   <Play size={20} />

@@ -33,7 +33,6 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
     onSpeechEnd: async (audio: any) => {
       try {
         console.log("Speech End");
-        setIsMicOn(false);
         const wavBuffer = utils.encodeWAV(audio);
         setAudio((prevAudio) => [
           ...prevAudio,
