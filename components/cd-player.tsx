@@ -23,8 +23,19 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
   }, []);
 
   const vad = useMicVAD({
-    modelURL: "https://static.llami.net/vad/silero_vad.onnx",
-    workletURL: "https://static.llami.net/vad/vad.worklet.bundle.min.js",
+    model:"v5",
+    baseAssetPath: "/vad/",
+    ortConfig: (ort: any) => {
+      ort.env.wasm.wasmPaths = "/vad/";
+    },
+    positiveSpeechThreshold: 0.75, // 임계값 조정
+    additionalAudioConstraints: {
+      advanced: [
+        { noiseSuppression: true },
+        { echoCancellation: true },
+        { autoGainControl: true },
+      ],
+    },
     onSpeechStart: () => {
       console.log("Speech Start");
       console.log("음성인식중입니다");
@@ -100,9 +111,6 @@ const CDPlayer = ({ musicTitle }: { musicTitle: string }) => {
         setError(`Processing error: ${error}`);
         console.log("Processing error:" + error);
       }
-    },
-    ortConfig: (ort: any) => {
-      ort.env.wasm.wasmPaths = "https://unpkg.com/onnxruntime-web@dev/dist/";
     },
     startOnLoad: false,
   });

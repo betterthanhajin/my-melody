@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.1.0",
-    "@ricky0123/vad-react": "^0.0.24",
+    "@ricky0123/vad-react": "^0.0.28",
     "@types/p5": "^1.7.6",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
